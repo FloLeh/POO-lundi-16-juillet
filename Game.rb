@@ -42,10 +42,10 @@ class Game
         t -= 1 #On change le tour pour le joueur1
       end
     end
-    if t == 1 && @grille.game_over
+    if t == 1
       @grille.show_board
       puts "\n******************C'est #{@joueur2.name} qui gagne !******************"
-    elsif t == 2 && @grille.game_over
+    elsif t == 2
       @grille.show_board
       puts "\n******************C'est #{@joueur1.name} qui gagne !******************"
     elsif @grille.full(@grille.board)
