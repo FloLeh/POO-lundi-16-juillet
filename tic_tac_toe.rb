@@ -1,55 +1,39 @@
 class Board
   attr_accessor :board
 
-  def initialize(board=[[],[],[]])
+  def initialize(board=[])
     @board = board
-    3.times do
-      board[0] << BoardCase.new().form
-    end
-    3.times do
-      board[1] << BoardCase.new().form
-    end
-    3.times do
-      board[2] << BoardCase.new().form
+    9.times do
+      board << BoardCase.new().form
     end
   end
 
   def show_board
+    puts "\n   1   2   3"
+    p '1 ' + board[0..2].join(' | ') + ' '
+    p " ---|---|---"
+    p '2 ' + board[3..5].join(' | ') + ' '
+    p " ---|---|---"
+    p '3 ' + board[6..8].join(' | ') + ' '
     puts "\n"
-    p ' ' + board[0].join(' | ') + ' '
-    p "---|---|---"
-    p ' ' + board[1].join(' | ') + ' '
-    p "---|---|---"
-    p ' ' + board[2].join(' | ') + ' '
-    puts "\n"
+  end
+
+  def full(boards)
+    !boards.include?(' ')
   end
 
   def game_over
-    3.times do |i|
-      if @board[i] == ['X','X','X']
-       return true
-     elsif @board[i] == ['O','O','O']
-       return true
-     end
-    end
-    if (@board[0][0] == @board[1][0]) && (@board[1][0] == @board[2][0])
-      return true
-
-    elsif (@board[0][1] == @board[1][1]) && (@board[1][1] == @board[2][1])
-      return true
-
-    elsif (@board[0][2] == @board[1][2]) && (@board[1][2] == @board[2][2])
-      return true
-
-    elsif (@board[0][0] == @board[1][1]) && (@board[1][1] == @board[2][2])
-      return true
-
-    elsif (@board[2][0] == @board[1][1]) && (@board[1][1] == @board[0][2])
-      return true
-    end
-
-    return false
+    ([board[0], board[1], board[2]].uniq.size == 1 && [board[0], board[1], board[2]].uniq != [' ']) ||
+    ([board[3], board[4], board[5]].uniq.size == 1 && [board[3], board[4], board[5]].uniq != [' ']) ||
+    ([board[6], board[7], board[8]].uniq.size == 1 && [board[6], board[7], board[8]].uniq != [' ']) ||
+    ([board[0], board[3], board[6]].uniq.size == 1 && [board[0], board[3], board[6]].uniq != [' ']) ||
+    ([board[1], board[4], board[7]].uniq.size == 1 && [board[1], board[4], board[7]].uniq != [' ']) ||
+    ([board[2], board[5], board[8]].uniq.size == 1 && [board[2], board[5], board[8]].uniq != [' ']) ||
+    ([board[0], board[4], board[8]].uniq.size == 1 && [board[0], board[4], board[8]].uniq != [' ']) ||
+    ([board[2], board[4], board[6]].uniq.size == 1 && [board[2], board[4], board[6]].uniq != [' '])
   end
+
+
 end
 
 
@@ -87,24 +71,28 @@ class Game
   end
 
   def turn(player)
-    puts "C'est à #{player.name} de jouer"
+    puts "\n******************C'est à #{player.name} de jouer******************"
     @grille.show_board
     p "Où veux-tu jouer ? (ligne,colonne)"
     print "> "
     choice = gets.chomp.split(',')
-    while !(@grille.board[choice[0].to_i][choice[1].to_i]) == ' '
+    while (@grille.board[(choice[0].to_i) *3 + choice[1].to_i] == ' ')==false
       p "Cette case est prise !"
-      p "Où veux-tu jouer ? (ligne,colonne)"
+      @grille.show_board
+      puts "\nChoisis une case vide !  (ligne,colonne)"
+      print "> "
       choice = gets.chomp.split(',')
     end
-    @grille.board[choice[0].to_i][choice[1].to_i].gsub!(' ', player.state)
+    @grille.board[(choice[0].to_i-1) *3 + choice[1].to_i-1].gsub!(' ', player.state)
   end
 
   def start
     t = 1
     puts "Le jeu commence !\n"
-    while @grille.game_over
-      if t == 1
+    while !@grille.game_over
+      if @grille.full(@grille.board)
+        break
+      elsif t == 1
         self.turn(@joueur1)
         t += 1
       else
@@ -112,12 +100,15 @@ class Game
         t -= 1
       end
     end
-    if t == 1
+    if t == 1 && @grille.game_over
       @grille.show_board
-      p "C'est #{@joueur2.name} qui gagne !"
-    else
+      puts "\n******************C'est #{@joueur2.name} (O) qui gagne !******************"
+    elsif t == 2 && @grille.game_over
       @grille.show_board
-      p "C'est #{@joueur1.name} qui gagne !"
+      puts "\n******************C'est #{@joueur1.name} (X) qui gagne !******************"
+    elsif @grille.full(@grille.board)
+      @grille.show_board
+      puts "\n******************Egalité !******************"
     end
   end
 
@@ -126,3 +117,10 @@ end
 
 jeu = Game.new
 jeu.start
+=begin
+" X | X | O "
+"---|---|---"
+" O | O | X "
+"---|---|---"
+" X | O | X "
+=end
