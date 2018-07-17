@@ -118,6 +118,7 @@ end
 jeu = Game.new
 jeu.start
 =begin
+Un exemple d'égalité pour des tests
 " X | X | O "
 "---|---|---"
 " O | O | X "
