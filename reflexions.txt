@@ -1,0 +1,15 @@
+classe Board : le plateau, 1 instance, 3x3
+attributs :
+méthodes : new_board //
+
+classe BoardCase : une case, 9 instances
+attributs :
+méthodes : pleine/vide ? // rond/croix ? // set
+
+classe Player : un joueur, 2 instances
+attributs :
+méthodes :
+
+classe Game : le jeu
+attributs :
+méthodes : start // new_game // next_turn
